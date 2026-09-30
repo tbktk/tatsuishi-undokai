@@ -69,7 +69,13 @@
     </main>
 </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    const SUPABASE_URL="https://jovnslkxgdnlfiqkfwfl.supabase.co";
+    const SUPABASE_KEY="sb_publishable_osr7gCLGgtnoN_aQECtHIA_sJW6diww";
+    const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+    let sessionPassword="";
+
     const EVENTS=[
       {no:1,time:"8:15",title:"開会式",info:"全員",part:"morning"},
       {no:2,time:"8:30",title:"ラジオ体操",info:"全員",part:"morning"},
@@ -153,6 +159,69 @@
       const done=players.reduce((n,item,i)=>n+(checked[keyFor(event.no,i,item.label)]?1:0),0);
       return{competition,items,players,done};
     }
+
+    function localKeyForRemote(eventNo,playerKey){
+      const event=EVENTS.find(item=>item.no===Number(eventNo));
+      if(!event)return null;
+      const {players}=countsFor(event);
+      const index=Number(playerKey);
+      const player=players[index];
+      return player ? keyFor(event.no,index,player.label) : null;
+    }
+
+    function applyRemoteRow(row){
+      const localKey=localKeyForRemote(row.event_no,row.player_key);
+      if(!localKey)return;
+      if(row.checked)checked[localKey]=true;else delete checked[localKey];
+      saveChecks();
+
+      const input=document.querySelector('input[data-event-no="'+row.event_no+'"][data-player-key="'+row.player_key+'"]');
+      if(input){
+        input.checked=!!row.checked;
+        input.closest(".player")?.classList.toggle("checked",!!row.checked);
+      }
+
+      const event=EVENTS.find(item=>item.no===Number(row.event_no));
+      const details=document.querySelector('details[data-event-no="'+row.event_no+'"]');
+      const attendance=details?.querySelector(".attendance");
+      if(event&&attendance){
+        const fresh=countsFor(event);
+        attendance.textContent=fresh.done+" / "+fresh.players.length+" "+fresh.competition.unit+" 集合";
+      }
+    }
+
+    async function loadRemoteAttendance(){
+      const {data,error}=await db.from("tatsuishi_attendance").select("event_no,player_key,checked");
+      if(error)throw error;
+
+      checked={};
+      for(const row of data||[]){
+        const localKey=localKeyForRemote(row.event_no,row.player_key);
+        if(localKey&&row.checked)checked[localKey]=true;
+      }
+      saveChecks();
+    }
+
+    function startAttendanceRealtime(){
+      db.channel("tatsuishi-attendance")
+        .on("postgres_changes",
+          {event:"*",schema:"public",table:"tatsuishi_attendance"},
+          payload=>{
+            if(payload.new)applyRemoteRow(payload.new);
+          }
+        )
+        .subscribe();
+    }
+
+    async function saveRemoteAttendance(eventNo,playerKey,value){
+      const {error}=await db.rpc("set_tatsuishi_attendance",{
+        p_event_no:eventNo,
+        p_player_key:String(playerKey),
+        p_checked:value,
+        p_password:sessionPassword
+      });
+      if(error)throw error;
+    }
     function makeEvent(event){
       const {competition,items,players,done}=countsFor(event);
 
@@ -182,6 +251,7 @@
 
       const details=document.createElement("details");
       details.className="event"+(event.scored?" scored":"");
+      details.dataset.eventNo=String(event.no);
 
       const summary=document.createElement("summary");
       summary.className="event-summary";
@@ -247,16 +317,34 @@
           const input=document.createElement("input");
           input.type="checkbox";
           input.checked=!!checked[k];
+          input.dataset.eventNo=String(event.no);
+          input.dataset.playerKey=String(index);
 
           const span=document.createElement("span");
           renderPlayerLabel(span,item.label,event.no);
 
-          input.addEventListener("change",()=>{
-            if(input.checked)checked[k]=true;else delete checked[k];
+          input.addEventListener("change",async()=>{
+            const next=input.checked;
+            if(next)checked[k]=true;else delete checked[k];
             saveChecks();
-            label.classList.toggle("checked",input.checked);
-            const fresh=countsFor(event);
-            if(attendance) attendance.textContent=fresh.done+" / "+fresh.players.length+" "+fresh.competition.unit+" 集合";
+            label.classList.toggle("checked",next);
+            let fresh=countsFor(event);
+            if(attendance)attendance.textContent=fresh.done+" / "+fresh.players.length+" "+fresh.competition.unit+" 集合";
+
+            input.disabled=true;
+            try{
+              await saveRemoteAttendance(event.no,index,next);
+            }catch(error){
+              input.checked=!next;
+              if(!next)checked[k]=true;else delete checked[k];
+              saveChecks();
+              label.classList.toggle("checked",!next);
+              fresh=countsFor(event);
+              if(attendance)attendance.textContent=fresh.done+" / "+fresh.players.length+" "+fresh.competition.unit+" 集合";
+              alert("出欠状態を同期できませんでした。通信状態を確認してもう一度お試しください。");
+            }finally{
+              input.disabled=false;
+            }
           });
 
           label.append(input,span);
@@ -284,10 +372,13 @@
         const response=await fetch("./players.enc.json",{cache:"no-store"});
         if(!response.ok)throw new Error("data");
         decrypted=await decryptPayload(await response.json(),password);
+        sessionPassword=password;
+        await loadRemoteAttendance();
         document.getElementById("password").value="";
         document.getElementById("unlockPanel").classList.add("hidden");
         document.getElementById("staffApp").classList.remove("hidden");
         render();
+        startAttendanceRealtime();
       }catch{
         message.className="message error";
         message.textContent="合言葉が違うか、選手データを読み込めませんでした。";
