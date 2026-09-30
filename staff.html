@@ -325,6 +325,15 @@
 
           input.addEventListener("change",async()=>{
             const next=input.checked;
+
+            if(!next){
+              const ok=confirm("この選手の集合チェックを解除しますか？");
+              if(!ok){
+                input.checked=true;
+                return;
+              }
+            }
+
             if(next)checked[k]=true;else delete checked[k];
             saveChecks();
             label.classList.toggle("checked",next);
