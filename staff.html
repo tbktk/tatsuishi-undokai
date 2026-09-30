@@ -7,136 +7,48 @@
   <meta name="theme-color" content="#f7f5ef" />
   <title>役員用｜立石地区 選手集合確認</title>
   <style>
-    :root {
-      --bg: #f7f5ef;
-      --surface: #fff;
-      --ink: #1f2933;
-      --muted: #69757f;
-      --line: #dedbd1;
-      --accent: #2f6b4f;
-      --accent-soft: #e9f2ed;
-      --danger: #a23b3b;
-      --shadow: 0 10px 30px rgba(31, 41, 51, .07);
-      --radius: 18px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--ink);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN",
-        "Hiragino Sans", "Yu Gothic", "YuGothic", Meiryo, sans-serif;
-      line-height: 1.6;
-    }
-    button, input { font: inherit; }
-    .wrap { width: min(760px, calc(100% - 28px)); margin: 0 auto; }
-    header { padding: 26px 0 16px; }
-    h1 { margin: 0; font-size: clamp(1.55rem, 5vw, 2.25rem); line-height: 1.3; }
-    .sub { margin: 8px 0 0; color: var(--muted); font-size: .92rem; }
-    .panel {
-      margin: 12px 0 22px;
-      padding: 20px;
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-    .unlock-row { display: flex; gap: 10px; align-items: stretch; }
-    .unlock-row input {
-      min-width: 0; flex: 1;
-      padding: 13px 14px;
-      border: 1px solid #cfcac0;
-      border-radius: 12px;
-      background: #fff;
-    }
-    .primary, .secondary {
-      border: 0;
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .primary { color: #fff; background: var(--accent); }
-    .secondary { color: var(--ink); background: #eeeae1; }
-    .message { min-height: 1.5em; margin: 10px 0 0; font-size: .9rem; color: var(--muted); }
-    .message.error { color: var(--danger); }
-    .toolbar {
-      display: flex; justify-content: space-between; gap: 10px; align-items: center;
-      margin: 18px 0 12px;
-    }
-    .progress { color: var(--muted); font-size: .9rem; }
-    .competition-list { display: grid; gap: 10px; }
-    details.competition {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-    details.competition[open] { border-color: #c8d9cf; }
-    summary {
-      list-style: none;
-      cursor: pointer;
-      padding: 16px 17px;
-      display: grid;
-      grid-template-columns: 66px 1fr auto;
-      gap: 12px;
-      align-items: center;
-    }
-    summary::-webkit-details-marker { display: none; }
-    .time { color: var(--accent); font-weight: 800; }
-    .event-title { font-weight: 750; line-height: 1.4; }
-    .event-no { color: var(--muted); font-size: .8rem; margin-right: .35em; }
-    .count {
-      min-width: 60px;
-      text-align: right;
-      color: var(--muted);
-      font-size: .82rem;
-      white-space: nowrap;
-    }
-    .players {
-      border-top: 1px solid var(--line);
-      padding: 8px 14px 14px;
-    }
-    .player {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      padding: 11px 5px;
-      border-bottom: 1px solid #ece9e1;
-      cursor: pointer;
-    }
-    .player:last-child { border-bottom: 0; }
-    .player input { width: 22px; height: 22px; flex: 0 0 auto; accent-color: var(--accent); }
-    .player.checked span { color: var(--muted); text-decoration: line-through; }
-    .empty { padding: 12px 5px 4px; color: var(--muted); font-size: .9rem; }
-    .hidden { display: none !important; }
-    .lock-note {
-      margin: 0;
-      color: var(--muted);
-      font-size: .84rem;
-    }
-    footer { padding: 26px 0 38px; color: var(--muted); text-align: center; font-size: .78rem; }
-    @media (max-width: 520px) {
-      .unlock-row { flex-direction: column; }
-      summary { grid-template-columns: 60px 1fr; }
-      .count { grid-column: 2; text-align: left; margin-top: -6px; }
-      .toolbar { align-items: flex-start; flex-direction: column; }
-    }
+    :root{--bg:#f7f5ef;--surface:#fff;--ink:#1f2933;--muted:#69757f;--line:#dedbd1;--accent:#2f6b4f;--warm:#f2eadb;--danger:#a23b3b;--shadow:0 10px 30px rgba(31,41,51,.06);--radius:18px}
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","YuGothic",Meiryo,sans-serif;line-height:1.65}
+    button,input{font:inherit}.wrap{width:min(760px,calc(100% - 32px));margin:0 auto}header{padding:32px 0 18px}
+    h1{margin:0;font-size:clamp(1.7rem,5.8vw,2.55rem);line-height:1.25;letter-spacing:-.02em}
+    .meta{display:flex;flex-wrap:wrap;gap:8px 16px;margin:14px 0 0;color:var(--muted);font-size:.95rem}
+    .panel{margin:12px 0 28px;padding:18px 20px;background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:14px;box-shadow:var(--shadow)}
+    .panel strong{display:block;margin-bottom:6px;color:var(--accent)}.lock-note{margin:0;color:var(--muted);font-size:.9rem}
+    .unlock-row{display:flex;gap:10px;margin-top:14px}.unlock-row input{min-width:0;flex:1;padding:13px 14px;border:1px solid #cfcac0;border-radius:12px;background:#fff}
+    .primary,.secondary{border:0;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer}.primary{color:#fff;background:var(--accent)}.secondary{color:var(--ink);background:#eeeae1}
+    .message{min-height:1.5em;margin:10px 0 0;font-size:.9rem;color:var(--muted)}.message.error{color:var(--danger)}
+    .toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:0 0 14px}.progress{color:var(--muted);font-size:.9rem}
+    .score-legend{display:inline-flex;align-items:center;gap:7px;margin:0 0 10px;color:var(--muted);font-size:.86rem}
+    .score-legend::before{content:"";width:14px;height:14px;flex:0 0 14px;background:#fff7df;border:1px solid #d9b85f;border-radius:4px}
+    .section-title{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:30px 0 14px}.section-title h2{margin:0;font-size:1.22rem}.section-title span{color:var(--muted);font-size:.86rem}
+    .schedule{display:grid;gap:10px}
+    details.event{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+    details.event.scored{background:#fff7df;border-color:#d9b85f}details.event[open]{box-shadow:0 12px 34px rgba(31,41,51,.09)}
+    summary.event-summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:84px 1fr;gap:14px;align-items:start;padding:16px 17px}
+    summary.event-summary::-webkit-details-marker{display:none}.time{color:var(--accent);font-size:1.05rem;font-weight:800;letter-spacing:.01em;white-space:nowrap}.scored .time{color:#8a6212}
+    .event-main h3{margin:0;font-size:1rem;line-height:1.45}.event-main p{margin:6px 0 0;color:var(--muted);font-size:.9rem;line-height:1.55}
+    .number{display:inline-block;margin-right:.45em;color:var(--muted);font-size:.78rem;font-weight:700;vertical-align:.08em}
+    .attendance{display:inline-block;margin-top:7px;color:var(--accent);font-size:.82rem;font-weight:700}
+    .players{border-top:1px solid rgba(222,219,209,.95);padding:8px 14px 14px;background:rgba(255,255,255,.6)}.scored .players{background:rgba(255,255,255,.45)}
+    .player{display:flex;align-items:center;gap:11px;padding:11px 5px;border-bottom:1px solid #ece9e1;cursor:pointer}.player:last-child{border-bottom:0}
+    .player input{width:22px;height:22px;flex:0 0 auto;accent-color:var(--accent)}.player.checked span{color:var(--muted);text-decoration:line-through}
+    .empty{padding:10px 5px 2px;color:var(--muted);font-size:.9rem}.break{margin:14px 0 2px;padding:14px 18px;background:var(--warm);border-radius:14px;text-align:center;font-weight:700}
+    .hidden{display:none!important}footer{margin-top:28px;padding:0 0 36px;color:var(--muted);font-size:.78rem;text-align:center}
+    @media(max-width:520px){.wrap{width:min(100% - 22px,760px)}header{padding-top:24px}.unlock-row{flex-direction:column}summary.event-summary{grid-template-columns:68px 1fr;gap:10px;padding:14px}.time{font-size:1rem}.toolbar{align-items:flex-start;flex-direction:column}.panel{padding:16px}}
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
       <h1>立石地区 選手集合確認</h1>
-      <p class="sub">令和8年度 第53回 総社地区市民運動会・役員用</p>
+      <div class="meta"><span>2026年10月4日（日）</span><span>総社小学校</span><span>役員用</span></div>
     </header>
-
     <main>
       <section id="unlockPanel" class="panel">
         <strong>役員用ページを開く</strong>
         <p class="lock-note">共有された合言葉を入力してください。合言葉はこのページやGitHubには保存されません。</p>
-        <form id="unlockForm" class="unlock-row" style="margin-top:14px">
+        <form id="unlockForm" class="unlock-row">
           <input id="password" type="password" autocomplete="current-password" placeholder="合言葉" aria-label="合言葉" required />
           <button class="primary" type="submit">選手一覧を表示</button>
         </form>
@@ -148,152 +60,170 @@
           <div id="overallProgress" class="progress"></div>
           <button id="resetChecks" class="secondary" type="button">チェックを全解除</button>
         </div>
-        <div id="competitionList" class="competition-list"></div>
+        <div class="score-legend">色付きの競技は採点競技です</div>
+
+        <div class="section-title"><h2>午前の部</h2><span>8:15〜</span></div>
+        <section id="morningList" class="schedule" aria-label="午前の競技"></section>
+
+        <div class="break">昼休み　11:30〜12:15</div>
+
+        <div class="section-title"><h2>午後の部</h2><span>12:15〜</span></div>
+        <section id="afternoonList" class="schedule" aria-label="午後の競技"></section>
       </section>
     </main>
-
     <footer>端末ごとにチェック状態を保存します</footer>
   </div>
 
   <script>
-    const EVENTS = [
-      { no: 6, time: "9:50", title: "ソフトバレー送りリレー" },
-      { no: 8, time: "10:40", title: "インディアカ入りリレー" },
-      { no: 9, time: "11:05", title: "シルバー玉入れ競争" },
-      { no: 10, time: "11:30", title: "年齢別リレー（予選）" },
-      { no: 12, time: "12:30", title: "助っ人綱引き" },
-      { no: 13, time: "12:55", title: "ボール蹴りリレー" },
-      { no: 14, time: "13:20", title: "子供長縄跳び競争" },
-      { no: 15, time: "13:45", title: "ソフトボールリレー" },
-      { no: 16, time: "14:05", title: "紅白玉入れ" },
-      { no: 17, time: "14:30", title: "年齢別リレー（決勝）" }
+    const EVENTS=[
+      {no:1,time:"8:15",title:"開会式",info:"全員",part:"morning"},
+      {no:2,time:"8:30",title:"ラジオ体操",info:"全員",part:"morning"},
+      {no:3,time:"8:40",title:"遊戯",info:"3園合同",part:"morning"},
+      {no:4,time:"9:00",title:"スピード玉入れ<br>総社 vs 勝山 対抗戦",info:"勝山・総社小児童",part:"morning"},
+      {no:5,time:"9:25",title:"親子電車",info:"10組以内・幼児と保護者",part:"morning"},
+      {no:6,time:"9:50",title:"ソフトバレー送りリレー",info:"30歳以上4人（男女各2人）／40歳以上6人（男女各3人）",part:"morning",scored:true},
+      {no:7,time:"10:15",title:"台風の目",info:"小学生 男女15人（3人1組）",part:"morning"},
+      {no:8,time:"10:40",title:"インディアカ入りリレー",info:"18歳以上女子6人",part:"morning",scored:true},
+      {no:9,time:"11:05",title:"シルバー玉入れ競争",info:"60歳以上 男女15人",part:"morning",scored:true},
+      {no:10,time:"11:30",title:"年齢別リレー（予選）",info:"7人（男性4人・女性3人）",part:"morning",scored:true},
+      {no:11,time:"12:15",title:"お菓子GETだぜ！<br>待ってて自治会長",info:"",part:"afternoon"},
+      {no:12,time:"12:30",title:"助っ人綱引き",info:"20人（男性10人・女性10人）",part:"afternoon",scored:true},
+      {no:13,time:"12:55",title:"ボール蹴りリレー",info:"4人（年齢・性別不問）",part:"afternoon",scored:true},
+      {no:14,time:"13:20",title:"子供長縄跳び競争",info:"12人（小学生男女）",part:"afternoon",scored:true},
+      {no:15,time:"13:45",title:"ソフトボールリレー",info:"10代以上1人／20代以上1人／30代以上1人／40代以上2人／男女不問5人",part:"afternoon",scored:true},
+      {no:16,time:"14:05",title:"紅白玉入れ",info:"20人（男性10人・女性10人）",part:"afternoon",scored:true},
+      {no:17,time:"14:30",title:"年齢別リレー（決勝）",info:"予選参照",part:"afternoon",scored:true},
+      {no:18,time:"15:00",title:"閉会式",info:"全員",part:"afternoon"}
     ];
 
-    const STORAGE_KEY = "tatsuishi-undokai-attendance-v1";
-    let decrypted = null;
-    let checked = loadChecks();
+    const STORAGE_KEY="tatsuishi-undokai-attendance-v1";
+    let decrypted=null;
+    let checked=loadChecks();
 
-    function loadChecks() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); }
-      catch { return {}; }
-    }
-    function saveChecks() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(checked));
-    }
-    function b64ToBytes(value) {
-      const binary = atob(value);
-      return Uint8Array.from(binary, c => c.charCodeAt(0));
-    }
-    async function decryptPayload(payload, password) {
-      const material = await crypto.subtle.importKey(
-        "raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveKey"]
-      );
-      const key = await crypto.subtle.deriveKey(
-        { name: "PBKDF2", salt: b64ToBytes(payload.salt), iterations: payload.iterations, hash: "SHA-256" },
-        material,
-        { name: "AES-GCM", length: 256 },
-        false,
-        ["decrypt"]
-      );
-      const plain = await crypto.subtle.decrypt(
-        { name: "AES-GCM", iv: b64ToBytes(payload.iv) },
-        key,
-        b64ToBytes(payload.data)
-      );
+    function loadChecks(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}")}catch{return{}}}
+    function saveChecks(){localStorage.setItem(STORAGE_KEY,JSON.stringify(checked))}
+    function b64ToBytes(value){const binary=atob(value);return Uint8Array.from(binary,c=>c.charCodeAt(0))}
+    async function decryptPayload(payload,password){
+      const material=await crypto.subtle.importKey("raw",new TextEncoder().encode(password),"PBKDF2",false,["deriveKey"]);
+      const key=await crypto.subtle.deriveKey({name:"PBKDF2",salt:b64ToBytes(payload.salt),iterations:payload.iterations,hash:"SHA-256"},material,{name:"AES-GCM",length:256},false,["decrypt"]);
+      const plain=await crypto.subtle.decrypt({name:"AES-GCM",iv:b64ToBytes(payload.iv)},key,b64ToBytes(payload.data));
       return JSON.parse(new TextDecoder().decode(plain));
     }
-
-    function keyFor(no, index, name) {
-      return no + ":" + index + ":" + name;
+    function keyFor(no,index,name){return no+":"+index+":"+name}
+    function countsFor(event){
+      const names=decrypted?.competitions?.[String(event.no)]||[];
+      const done=names.reduce((n,name,i)=>n+(checked[keyFor(event.no,i,name)]?1:0),0);
+      return{names,done};
     }
+    function updateOverall(){
+      let total=0,done=0;
+      for(const event of EVENTS){const c=countsFor(event);total+=c.names.length;done+=c.done}
+      document.getElementById("overallProgress").textContent="全体 "+done+" / "+total+" 名 集合確認";
+    }
+    function makeEvent(event){
+      const {names,done}=countsFor(event);
+      const details=document.createElement("details");
+      details.className="event"+(event.scored?" scored":"");
 
-    function render() {
-      const list = document.getElementById("competitionList");
-      list.innerHTML = "";
-      let total = 0;
-      let done = 0;
+      const summary=document.createElement("summary");
+      summary.className="event-summary";
 
-      for (const event of EVENTS) {
-        const names = decrypted?.competitions?.[String(event.no)] || [];
-        total += names.length;
-        const eventDone = names.reduce((n, name, i) => n + (checked[keyFor(event.no, i, name)] ? 1 : 0), 0);
-        done += eventDone;
+      const time=document.createElement("div");
+      time.className="time";
+      time.textContent=event.time;
 
-        const details = document.createElement("details");
-        details.className = "competition";
+      const main=document.createElement("div");
+      main.className="event-main";
+      const h3=document.createElement("h3");
+      h3.innerHTML='<span class="number">No.'+event.no+'</span>'+event.title;
+      main.appendChild(h3);
 
-        const summary = document.createElement("summary");
-        summary.innerHTML =
-          '<div class="time">' + event.time + '</div>' +
-          '<div class="event-title"><span class="event-no">No.' + event.no + '</span>' + event.title + '</div>' +
-          '<div class="count">' + eventDone + ' / ' + names.length + ' 集合</div>';
-        details.appendChild(summary);
-
-        const players = document.createElement("div");
-        players.className = "players";
-
-        if (!names.length) {
-          const empty = document.createElement("div");
-          empty.className = "empty";
-          empty.textContent = "選手未登録";
-          players.appendChild(empty);
-        } else {
-          names.forEach((name, index) => {
-            const k = keyFor(event.no, index, name);
-            const label = document.createElement("label");
-            label.className = "player" + (checked[k] ? " checked" : "");
-
-            const input = document.createElement("input");
-            input.type = "checkbox";
-            input.checked = !!checked[k];
-            input.addEventListener("change", () => {
-              if (input.checked) checked[k] = true;
-              else delete checked[k];
-              saveChecks();
-              render();
-            });
-
-            const span = document.createElement("span");
-            span.textContent = name;
-            label.append(input, span);
-            players.appendChild(label);
-          });
-        }
-        details.appendChild(players);
-        list.appendChild(details);
+      if(event.info){
+        const p=document.createElement("p");
+        p.textContent=event.info;
+        main.appendChild(p);
       }
 
-      document.getElementById("overallProgress").textContent =
-        "全体 " + done + " / " + total + " 名 集合確認";
+      let attendance=null;
+      if(names.length){
+        attendance=document.createElement("span");
+        attendance.className="attendance";
+        attendance.textContent=done+" / "+names.length+" 名 集合";
+        main.appendChild(attendance);
+      }
+
+      summary.append(time,main);
+      details.appendChild(summary);
+
+      const players=document.createElement("div");
+      players.className="players";
+
+      if(!names.length){
+        const empty=document.createElement("div");
+        empty.className="empty";
+        empty.textContent="この競技は選手名の登録がありません。";
+        players.appendChild(empty);
+      }else{
+        names.forEach((name,index)=>{
+          const k=keyFor(event.no,index,name);
+          const label=document.createElement("label");
+          label.className="player"+(checked[k]?" checked":"");
+
+          const input=document.createElement("input");
+          input.type="checkbox";
+          input.checked=!!checked[k];
+
+          const span=document.createElement("span");
+          span.textContent=name;
+
+          input.addEventListener("change",()=>{
+            if(input.checked)checked[k]=true;else delete checked[k];
+            saveChecks();
+            label.classList.toggle("checked",input.checked);
+            const c=countsFor(event);
+            attendance.textContent=c.done+" / "+c.names.length+" 名 集合";
+            updateOverall();
+          });
+
+          label.append(input,span);
+          players.appendChild(label);
+        });
+      }
+
+      details.appendChild(players);
+      return details;
+    }
+    function render(){
+      const morning=document.getElementById("morningList");
+      const afternoon=document.getElementById("afternoonList");
+      morning.innerHTML="";afternoon.innerHTML="";
+      for(const event of EVENTS)(event.part==="morning"?morning:afternoon).appendChild(makeEvent(event));
+      updateOverall();
     }
 
-    document.getElementById("unlockForm").addEventListener("submit", async (e) => {
+    document.getElementById("unlockForm").addEventListener("submit",async e=>{
       e.preventDefault();
-      const message = document.getElementById("unlockMessage");
-      const password = document.getElementById("password").value;
-      message.className = "message";
-      message.textContent = "確認しています…";
-
-      try {
-        const response = await fetch("./players.enc.json", { cache: "no-store" });
-        if (!response.ok) throw new Error("data");
-        const payload = await response.json();
-        decrypted = await decryptPayload(payload, password);
-        document.getElementById("password").value = "";
+      const message=document.getElementById("unlockMessage");
+      const password=document.getElementById("password").value;
+      message.className="message";
+      message.textContent="確認しています…";
+      try{
+        const response=await fetch("./players.enc.json",{cache:"no-store"});
+        if(!response.ok)throw new Error("data");
+        decrypted=await decryptPayload(await response.json(),password);
+        document.getElementById("password").value="";
         document.getElementById("unlockPanel").classList.add("hidden");
         document.getElementById("staffApp").classList.remove("hidden");
         render();
-      } catch {
-        message.className = "message error";
-        message.textContent = "合言葉が違うか、選手データを読み込めませんでした。";
+      }catch{
+        message.className="message error";
+        message.textContent="合言葉が違うか、選手データを読み込めませんでした。";
       }
     });
 
-    document.getElementById("resetChecks").addEventListener("click", () => {
-      if (!confirm("この端末の集合チェックをすべて解除しますか？")) return;
-      checked = {};
-      saveChecks();
-      render();
+    document.getElementById("resetChecks").addEventListener("click",()=>{
+      if(!confirm("この端末の集合チェックをすべて解除しますか？"))return;
+      checked={};saveChecks();render();
     });
   </script>
 </body>
