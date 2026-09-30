@@ -155,6 +155,34 @@
       line-height: 1.55;
     }
 
+    .event.scored {
+      background: #fff7df;
+      border-color: #d9b85f;
+    }
+
+    .event.scored .time {
+      color: #8a6212;
+    }
+
+    .score-legend {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .score-legend::before {
+      content: "";
+      width: 14px;
+      height: 14px;
+      flex: 0 0 14px;
+      background: #fff7df;
+      border: 1px solid #d9b85f;
+      border-radius: 4px;
+    }
+
     .number {
       display: inline-block;
       margin-right: 0.45em;
@@ -241,6 +269,7 @@
           <b>2競技前までに立石地区テント前へ集合</b>してください。
         </p>
       </section>
+      <div class="score-legend">色付きの競技は採点競技です</div>
 
       <div class="section-title">
         <h2>午前の部</h2>
@@ -276,7 +305,7 @@
           <div><h3><span class="number">No.5</span>親子電車</h3><p>10組以内・幼児と保護者</p></div>
         </article>
 
-        <article class="event">
+        <article class="event scored">
           <div class="time">9:25</div>
           <div>
             <h3><span class="number">No.6</span>ソフトバレー送りリレー</h3>
@@ -289,7 +318,7 @@
           <div><h3><span class="number">No.7</span>台風の目</h3><p>小学生 男女15人（3人1組）</p></div>
         </article>
 
-        <article class="event">
+        <article class="event scored">
           <div class="time">10:40</div>
           <div><h3><span class="number">No.8</span>インディアカ入りリレー</h3><p>18歳以上女子6人</p></div>
         </article>
@@ -299,7 +328,7 @@
           <div><h3><span class="number">No.9</span>シルバー玉入れ競争</h3><p>60歳以上 男女15人</p></div>
         </article>
 
-        <article class="event">
+        <article class="event scored">
           <div class="time">11:30</div>
           <div><h3><span class="number">No.10</span>年齢別リレー（予選）</h3><p>7人（男性4人・女性3人）</p></div>
         </article>
@@ -318,22 +347,22 @@
           <div><h3><span class="number">No.11</span>お菓子GETだぜ！<br />待ってて自治会長</h3></div>
         </article>
 
-        <article class="event">
+        <article class="event scored">
           <div class="time">12:30</div>
           <div><h3><span class="number">No.12</span>助っ人綱引き</h3><p>20人（男性10人・女性10人）</p></div>
         </article>
 
-        <article class="event">
+        <article class="event scored">
           <div class="time">12:55</div>
           <div><h3><span class="number">No.13</span>ボール蹴りリレー</h3><p>4人（年齢・性別不問）</p></div>
         </article>
 
-        <article class="event">
+        <article class="event scored">
           <div class="time">13:20</div>
           <div><h3><span class="number">No.14</span>子供長縄跳び競争</h3><p>12人（小学生男女）</p></div>
         </article>
 
-        <article class="event">
+        <article class="event scored">
           <div class="time">13:45</div>
           <div>
             <h3><span class="number">No.15</span>ソフトボールリレー</h3>
@@ -341,12 +370,12 @@
           </div>
         </article>
 
-        <article class="event">
+        <article class="event scored">
           <div class="time">14:05</div>
           <div><h3><span class="number">No.16</span>紅白玉入れ</h3><p>20人（男性10人・女性10人）</p></div>
         </article>
 
-        <article class="event">
+        <article class="event scored">
           <div class="time">14:30</div>
           <div><h3><span class="number">No.17</span>年齢別リレー（決勝）</h3><p>予選参照</p></div>
         </article>
