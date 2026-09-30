@@ -113,7 +113,7 @@
     function makeEvent(event){
       const {names,done}=countsFor(event);
 
-      if(!names.length){
+      if(event.no < 5 || event.no > 17){
         const article=document.createElement("article");
         article.className="event-static"+(event.scored?" scored":"");
 
@@ -159,10 +159,13 @@
         main.appendChild(p);
       }
 
-      const attendance=document.createElement("span");
-      attendance.className="attendance";
-      attendance.textContent=done+" / "+names.length+" 名 集合";
-      main.appendChild(attendance);
+      let attendance=null;
+      if(names.length){
+        attendance=document.createElement("span");
+        attendance.className="attendance";
+        attendance.textContent=done+" / "+names.length+" 名 集合";
+        main.appendChild(attendance);
+      }
 
       const hint=document.createElement("span");
       hint.className="expand-hint";
@@ -174,6 +177,15 @@
 
       const players=document.createElement("div");
       players.className="players";
+
+      if(!names.length){
+        const empty=document.createElement("div");
+        empty.style.padding="10px 5px 2px";
+        empty.style.color="var(--muted)";
+        empty.style.fontSize=".9rem";
+        empty.textContent="選手はまだ登録されていません。";
+        players.appendChild(empty);
+      }
 
       names.forEach((name,index)=>{
         const k=keyFor(event.no,index,name);
@@ -192,7 +204,7 @@
           saveChecks();
           label.classList.toggle("checked",input.checked);
           const fresh=countsFor(event);
-          attendance.textContent=fresh.done+" / "+fresh.names.length+" 名 集合";
+          if(attendance) attendance.textContent=fresh.done+" / "+fresh.names.length+" 名 集合";
         });
 
         label.append(input,span);
