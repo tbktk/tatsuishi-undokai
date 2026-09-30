@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet" />
+  <meta name="theme-color" content="#f7f5ef" />
+  <title>役員用｜立石地区 選手集合確認</title>
+  <style>
+    :root {
+      --bg: #f7f5ef;
+      --surface: #fff;
+      --ink: #1f2933;
+      --muted: #69757f;
+      --line: #dedbd1;
+      --accent: #2f6b4f;
+      --accent-soft: #e9f2ed;
+      --danger: #a23b3b;
+      --shadow: 0 10px 30px rgba(31, 41, 51, .07);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN",
+        "Hiragino Sans", "Yu Gothic", "YuGothic", Meiryo, sans-serif;
+      line-height: 1.6;
+    }
+    button, input { font: inherit; }
+    .wrap { width: min(760px, calc(100% - 28px)); margin: 0 auto; }
+    header { padding: 26px 0 16px; }
+    h1 { margin: 0; font-size: clamp(1.55rem, 5vw, 2.25rem); line-height: 1.3; }
+    .sub { margin: 8px 0 0; color: var(--muted); font-size: .92rem; }
+    .panel {
+      margin: 12px 0 22px;
+      padding: 20px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .unlock-row { display: flex; gap: 10px; align-items: stretch; }
+    .unlock-row input {
+      min-width: 0; flex: 1;
+      padding: 13px 14px;
+      border: 1px solid #cfcac0;
+      border-radius: 12px;
+      background: #fff;
+    }
+    .primary, .secondary {
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .primary { color: #fff; background: var(--accent); }
+    .secondary { color: var(--ink); background: #eeeae1; }
+    .message { min-height: 1.5em; margin: 10px 0 0; font-size: .9rem; color: var(--muted); }
+    .message.error { color: var(--danger); }
+    .toolbar {
+      display: flex; justify-content: space-between; gap: 10px; align-items: center;
+      margin: 18px 0 12px;
+    }
+    .progress { color: var(--muted); font-size: .9rem; }
+    .competition-list { display: grid; gap: 10px; }
+    details.competition {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    details.competition[open] { border-color: #c8d9cf; }
+    summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 16px 17px;
+      display: grid;
+      grid-template-columns: 66px 1fr auto;
+      gap: 12px;
+      align-items: center;
+    }
+    summary::-webkit-details-marker { display: none; }
+    .time { color: var(--accent); font-weight: 800; }
+    .event-title { font-weight: 750; line-height: 1.4; }
+    .event-no { color: var(--muted); font-size: .8rem; margin-right: .35em; }
+    .count {
+      min-width: 60px;
+      text-align: right;
+      color: var(--muted);
+      font-size: .82rem;
+      white-space: nowrap;
+    }
+    .players {
+      border-top: 1px solid var(--line);
+      padding: 8px 14px 14px;
+    }
+    .player {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 11px 5px;
+      border-bottom: 1px solid #ece9e1;
+      cursor: pointer;
+    }
+    .player:last-child { border-bottom: 0; }
+    .player input { width: 22px; height: 22px; flex: 0 0 auto; accent-color: var(--accent); }
+    .player.checked span { color: var(--muted); text-decoration: line-through; }
+    .empty { padding: 12px 5px 4px; color: var(--muted); font-size: .9rem; }
+    .hidden { display: none !important; }
+    .lock-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: .84rem;
+    }
+    footer { padding: 26px 0 38px; color: var(--muted); text-align: center; font-size: .78rem; }
+    @media (max-width: 520px) {
+      .unlock-row { flex-direction: column; }
+      summary { grid-template-columns: 60px 1fr; }
+      .count { grid-column: 2; text-align: left; margin-top: -6px; }
+      .toolbar { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>立石地区 選手集合確認</h1>
+      <p class="sub">令和8年度 第53回 総社地区市民運動会・役員用</p>
+    </header>
+
+    <main>
+      <section id="unlockPanel" class="panel">
+        <strong>役員用ページを開く</strong>
+        <p class="lock-note">共有された合言葉を入力してください。合言葉はこのページやGitHubには保存されません。</p>
+        <form id="unlockForm" class="unlock-row" style="margin-top:14px">
+          <input id="password" type="password" autocomplete="current-password" placeholder="合言葉" aria-label="合言葉" required />
+          <button class="primary" type="submit">選手一覧を表示</button>
+        </form>
+        <p id="unlockMessage" class="message" aria-live="polite"></p>
+      </section>
+
+      <section id="staffApp" class="hidden">
+        <div class="toolbar">
+          <div id="overallProgress" class="progress"></div>
+          <button id="resetChecks" class="secondary" type="button">チェックを全解除</button>
+        </div>
+        <div id="competitionList" class="competition-list"></div>
+      </section>
+    </main>
+
+    <footer>端末ごとにチェック状態を保存します</footer>
+  </div>
+
+  <script>
+    const EVENTS = [
+      { no: 6, time: "9:50", title: "ソフトバレー送りリレー" },
+      { no: 8, time: "10:40", title: "インディアカ入りリレー" },
+      { no: 9, time: "11:05", title: "シルバー玉入れ競争" },
+      { no: 10, time: "11:30", title: "年齢別リレー（予選）" },
+      { no: 12, time: "12:30", title: "助っ人綱引き" },
+      { no: 13, time: "12:55", title: "ボール蹴りリレー" },
+      { no: 14, time: "13:20", title: "子供長縄跳び競争" },
+      { no: 15, time: "13:45", title: "ソフトボールリレー" },
+      { no: 16, time: "14:05", title: "紅白玉入れ" },
+      { no: 17, time: "14:30", title: "年齢別リレー（決勝）" }
+    ];
+
+    const STORAGE_KEY = "tatsuishi-undokai-attendance-v1";
+    let decrypted = null;
+    let checked = loadChecks();
+
+    function loadChecks() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); }
+      catch { return {}; }
+    }
+    function saveChecks() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(checked));
+    }
+    function b64ToBytes(value) {
+      const binary = atob(value);
+      return Uint8Array.from(binary, c => c.charCodeAt(0));
+    }
+    async function decryptPayload(payload, password) {
+      const material = await crypto.subtle.importKey(
+        "raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveKey"]
+      );
+      const key = await crypto.subtle.deriveKey(
+        { name: "PBKDF2", salt: b64ToBytes(payload.salt), iterations: payload.iterations, hash: "SHA-256" },
+        material,
+        { name: "AES-GCM", length: 256 },
+        false,
+        ["decrypt"]
+      );
+      const plain = await crypto.subtle.decrypt(
+        { name: "AES-GCM", iv: b64ToBytes(payload.iv) },
+        key,
+        b64ToBytes(payload.data)
+      );
+      return JSON.parse(new TextDecoder().decode(plain));
+    }
+
+    function keyFor(no, index, name) {
+      return no + ":" + index + ":" + name;
+    }
+
+    function render() {
+      const list = document.getElementById("competitionList");
+      list.innerHTML = "";
+      let total = 0;
+      let done = 0;
+
+      for (const event of EVENTS) {
+        const names = decrypted?.competitions?.[String(event.no)] || [];
+        total += names.length;
+        const eventDone = names.reduce((n, name, i) => n + (checked[keyFor(event.no, i, name)] ? 1 : 0), 0);
+        done += eventDone;
+
+        const details = document.createElement("details");
+        details.className = "competition";
+
+        const summary = document.createElement("summary");
+        summary.innerHTML =
+          '<div class="time">' + event.time + '</div>' +
+          '<div class="event-title"><span class="event-no">No.' + event.no + '</span>' + event.title + '</div>' +
+          '<div class="count">' + eventDone + ' / ' + names.length + ' 集合</div>';
+        details.appendChild(summary);
+
+        const players = document.createElement("div");
+        players.className = "players";
+
+        if (!names.length) {
+          const empty = document.createElement("div");
+          empty.className = "empty";
+          empty.textContent = "選手未登録";
+          players.appendChild(empty);
+        } else {
+          names.forEach((name, index) => {
+            const k = keyFor(event.no, index, name);
+            const label = document.createElement("label");
+            label.className = "player" + (checked[k] ? " checked" : "");
+
+            const input = document.createElement("input");
+            input.type = "checkbox";
+            input.checked = !!checked[k];
+            input.addEventListener("change", () => {
+              if (input.checked) checked[k] = true;
+              else delete checked[k];
+              saveChecks();
+              render();
+            });
+
+            const span = document.createElement("span");
+            span.textContent = name;
+            label.append(input, span);
+            players.appendChild(label);
+          });
+        }
+        details.appendChild(players);
+        list.appendChild(details);
+      }
+
+      document.getElementById("overallProgress").textContent =
+        "全体 " + done + " / " + total + " 名 集合確認";
+    }
+
+    document.getElementById("unlockForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const message = document.getElementById("unlockMessage");
+      const password = document.getElementById("password").value;
+      message.className = "message";
+      message.textContent = "確認しています…";
+
+      try {
+        const response = await fetch("./players.enc.json", { cache: "no-store" });
+        if (!response.ok) throw new Error("data");
+        const payload = await response.json();
+        decrypted = await decryptPayload(payload, password);
+        document.getElementById("password").value = "";
+        document.getElementById("unlockPanel").classList.add("hidden");
+        document.getElementById("staffApp").classList.remove("hidden");
+        render();
+      } catch {
+        message.className = "message error";
+        message.textContent = "合言葉が違うか、選手データを読み込めませんでした。";
+      }
+    });
+
+    document.getElementById("resetChecks").addEventListener("click", () => {
+      if (!confirm("この端末の集合チェックをすべて解除しますか？")) return;
+      checked = {};
+      saveChecks();
+      render();
+    });
+  </script>
+</body>
+</html>
