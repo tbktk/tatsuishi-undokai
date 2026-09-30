@@ -16,9 +16,9 @@
     .panel{margin:12px 0 28px;padding:18px 20px;background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:14px;box-shadow:var(--shadow)}
     .panel strong{display:block;margin-bottom:6px;color:var(--accent)}.lock-note{margin:0;color:var(--muted);font-size:.9rem}
     .unlock-row{display:flex;gap:10px;margin-top:14px}.unlock-row input{min-width:0;flex:1;padding:13px 14px;border:1px solid #cfcac0;border-radius:12px;background:#fff}
-    .primary,.secondary{border:0;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer}.primary{color:#fff;background:var(--accent)}.secondary{color:var(--ink);background:#eeeae1}
+    .primary{border:0;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;color:#fff;background:var(--accent)}
     .message{min-height:1.5em;margin:10px 0 0;font-size:.9rem;color:var(--muted)}.message.error{color:var(--danger)}
-    .toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:0 0 14px}.progress{color:var(--muted);font-size:.9rem}
+    
     .score-legend{display:inline-flex;align-items:center;gap:7px;margin:0 0 10px;color:var(--muted);font-size:.86rem}
     .score-legend::before{content:"";width:14px;height:14px;flex:0 0 14px;background:#fff7df;border:1px solid #d9b85f;border-radius:4px}
     .section-title{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:30px 0 14px}.section-title h2{margin:0;font-size:1.22rem}.section-title span{color:var(--muted);font-size:.86rem}
@@ -33,9 +33,9 @@
     .players{border-top:1px solid rgba(222,219,209,.95);padding:8px 14px 14px;background:rgba(255,255,255,.6)}.scored .players{background:rgba(255,255,255,.45)}
     .player{display:flex;align-items:center;gap:11px;padding:11px 5px;border-bottom:1px solid #ece9e1;cursor:pointer}.player:last-child{border-bottom:0}
     .player input{width:22px;height:22px;flex:0 0 auto;accent-color:var(--accent)}.player.checked span{color:var(--muted);text-decoration:line-through}
-    .empty{padding:10px 5px 2px;color:var(--muted);font-size:.9rem}.break{margin:14px 0 2px;padding:14px 18px;background:var(--warm);border-radius:14px;text-align:center;font-weight:700}
-    .hidden{display:none!important}footer{margin-top:28px;padding:0 0 36px;color:var(--muted);font-size:.78rem;text-align:center}
-    @media(max-width:520px){.wrap{width:min(100% - 22px,760px)}header{padding-top:24px}.unlock-row{flex-direction:column}summary.event-summary{grid-template-columns:68px 1fr;gap:10px;padding:14px}.time{font-size:1rem}.toolbar{align-items:flex-start;flex-direction:column}.panel{padding:16px}}
+    .break{margin:14px 0 2px;padding:14px 18px;background:var(--warm);border-radius:14px;text-align:center;font-weight:700}
+    .expand-hint{display:inline-flex;align-items:center;gap:6px;margin-top:7px;color:var(--accent);font-size:.82rem;font-weight:700}.expand-hint::after{content:"⌄";font-size:1rem;line-height:1;transition:transform .18s ease}.event[open] .expand-hint::after{transform:rotate(180deg)}.event-static{display:grid;grid-template-columns:84px 1fr;gap:14px;align-items:start;padding:16px 17px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.event-static.scored{background:#fff7df;border-color:#d9b85f}.event-static.scored .time{color:#8a6212}.hidden{display:none!important}
+    @media(max-width:520px){.wrap{width:min(100% - 22px,760px)}header{padding-top:24px}.unlock-row{flex-direction:column}summary.event-summary,.event-static{grid-template-columns:68px 1fr;gap:10px;padding:14px}.time{font-size:1rem}.panel{padding:16px}}
   </style>
 </head>
 <body>
@@ -56,10 +56,6 @@
       </section>
 
       <section id="staffApp" class="hidden">
-        <div class="toolbar">
-          <div id="overallProgress" class="progress"></div>
-          <button id="resetChecks" class="secondary" type="button">チェックを全解除</button>
-        </div>
         <div class="score-legend">色付きの競技は採点競技です</div>
 
         <div class="section-title"><h2>午前の部</h2><span>8:15〜</span></div>
@@ -71,8 +67,7 @@
         <section id="afternoonList" class="schedule" aria-label="午後の競技"></section>
       </section>
     </main>
-    <footer>端末ごとにチェック状態を保存します</footer>
-  </div>
+</div>
 
   <script>
     const EVENTS=[
@@ -115,13 +110,33 @@
       const done=names.reduce((n,name,i)=>n+(checked[keyFor(event.no,i,name)]?1:0),0);
       return{names,done};
     }
-    function updateOverall(){
-      let total=0,done=0;
-      for(const event of EVENTS){const c=countsFor(event);total+=c.names.length;done+=c.done}
-      document.getElementById("overallProgress").textContent="全体 "+done+" / "+total+" 名 集合確認";
-    }
     function makeEvent(event){
       const {names,done}=countsFor(event);
+
+      if(!names.length){
+        const article=document.createElement("article");
+        article.className="event-static"+(event.scored?" scored":"");
+
+        const time=document.createElement("div");
+        time.className="time";
+        time.textContent=event.time;
+
+        const main=document.createElement("div");
+        main.className="event-main";
+        const h3=document.createElement("h3");
+        h3.innerHTML='<span class="number">No.'+event.no+'</span>'+event.title;
+        main.appendChild(h3);
+
+        if(event.info){
+          const p=document.createElement("p");
+          p.textContent=event.info;
+          main.appendChild(p);
+        }
+
+        article.append(time,main);
+        return article;
+      }
+
       const details=document.createElement("details");
       details.className="event"+(event.scored?" scored":"");
 
@@ -144,13 +159,15 @@
         main.appendChild(p);
       }
 
-      let attendance=null;
-      if(names.length){
-        attendance=document.createElement("span");
-        attendance.className="attendance";
-        attendance.textContent=done+" / "+names.length+" 名 集合";
-        main.appendChild(attendance);
-      }
+      const attendance=document.createElement("span");
+      attendance.className="attendance";
+      attendance.textContent=done+" / "+names.length+" 名 集合";
+      main.appendChild(attendance);
+
+      const hint=document.createElement("span");
+      hint.className="expand-hint";
+      hint.textContent="選手一覧";
+      main.appendChild(hint);
 
       summary.append(time,main);
       details.appendChild(summary);
@@ -158,37 +175,29 @@
       const players=document.createElement("div");
       players.className="players";
 
-      if(!names.length){
-        const empty=document.createElement("div");
-        empty.className="empty";
-        empty.textContent="この競技は選手名の登録がありません。";
-        players.appendChild(empty);
-      }else{
-        names.forEach((name,index)=>{
-          const k=keyFor(event.no,index,name);
-          const label=document.createElement("label");
-          label.className="player"+(checked[k]?" checked":"");
+      names.forEach((name,index)=>{
+        const k=keyFor(event.no,index,name);
+        const label=document.createElement("label");
+        label.className="player"+(checked[k]?" checked":"");
 
-          const input=document.createElement("input");
-          input.type="checkbox";
-          input.checked=!!checked[k];
+        const input=document.createElement("input");
+        input.type="checkbox";
+        input.checked=!!checked[k];
 
-          const span=document.createElement("span");
-          span.textContent=name;
+        const span=document.createElement("span");
+        span.textContent=name;
 
-          input.addEventListener("change",()=>{
-            if(input.checked)checked[k]=true;else delete checked[k];
-            saveChecks();
-            label.classList.toggle("checked",input.checked);
-            const c=countsFor(event);
-            attendance.textContent=c.done+" / "+c.names.length+" 名 集合";
-            updateOverall();
-          });
-
-          label.append(input,span);
-          players.appendChild(label);
+        input.addEventListener("change",()=>{
+          if(input.checked)checked[k]=true;else delete checked[k];
+          saveChecks();
+          label.classList.toggle("checked",input.checked);
+          const fresh=countsFor(event);
+          attendance.textContent=fresh.done+" / "+fresh.names.length+" 名 集合";
         });
-      }
+
+        label.append(input,span);
+        players.appendChild(label);
+      });
 
       details.appendChild(players);
       return details;
@@ -198,7 +207,6 @@
       const afternoon=document.getElementById("afternoonList");
       morning.innerHTML="";afternoon.innerHTML="";
       for(const event of EVENTS)(event.part==="morning"?morning:afternoon).appendChild(makeEvent(event));
-      updateOverall();
     }
 
     document.getElementById("unlockForm").addEventListener("submit",async e=>{
@@ -219,11 +227,6 @@
         message.className="message error";
         message.textContent="合言葉が違うか、選手データを読み込めませんでした。";
       }
-    });
-
-    document.getElementById("resetChecks").addEventListener("click",()=>{
-      if(!confirm("この端末の集合チェックをすべて解除しますか？"))return;
-      checked={};saveChecks();render();
     });
   </script>
 </body>
