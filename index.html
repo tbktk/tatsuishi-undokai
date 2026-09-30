@@ -78,6 +78,27 @@
       font-size: 0.95rem;
     }
 
+    .day-message {
+      margin: 4px 0 12px;
+      padding: 16px 18px;
+      background: var(--accent-soft);
+      border: 1px solid #cbded3;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .day-message strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--accent);
+      font-size: 1rem;
+    }
+
+    .day-message p {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
     .notice {
       margin: 12px 0 28px;
       padding: 18px 20px;
@@ -244,6 +265,7 @@
         font-size: 1rem;
       }
 
+      .day-message,
       .notice {
         padding: 16px;
       }
@@ -262,6 +284,11 @@
     </header>
 
     <main>
+      <section class="day-message" aria-label="当日の連絡">
+        <strong>当日の連絡</strong>
+        <p>現在、連絡事項はありません。</p>
+      </section>
+
       <section class="notice" aria-label="選手の方へ">
         <strong>選手の方へ</strong>
         <p>
