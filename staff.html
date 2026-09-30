@@ -31,7 +31,7 @@
     .number{display:inline-block;margin-right:.45em;color:var(--muted);font-size:.78rem;font-weight:700;vertical-align:.08em}
     .attendance{display:inline-block;margin-top:7px;color:var(--accent);font-size:.82rem;font-weight:700}
     .players{border-top:1px solid rgba(222,219,209,.95);padding:8px 14px 14px;background:rgba(255,255,255,.6)}.scored .players{background:rgba(255,255,255,.45)}
-    .player{display:flex;align-items:center;gap:11px;padding:11px 5px;border-bottom:1px solid #ece9e1;cursor:pointer}.player:last-child{border-bottom:0}
+    .player{display:flex;align-items:center;gap:11px;padding:11px 5px;border-bottom:1px solid #ece9e1;cursor:pointer}.player:last-child{border-bottom:0}.player-heading{padding:12px 5px 6px;font-weight:800;color:var(--ink)}
     .player input{width:22px;height:22px;flex:0 0 auto;accent-color:var(--accent)}.player.checked span{color:var(--muted);text-decoration:line-through}
     .break{margin:14px 0 2px;padding:14px 18px;background:var(--warm);border-radius:14px;text-align:center;font-weight:700}
     .expand-hint{display:inline-flex;align-items:center;gap:6px;margin-top:7px;color:var(--accent);font-size:.82rem;font-weight:700}.expand-hint::after{content:"⌄";font-size:1rem;line-height:1;transition:transform .18s ease}.event[open] .expand-hint::after{transform:rotate(180deg)}.event-static{display:grid;grid-template-columns:84px 1fr;gap:14px;align-items:start;padding:16px 17px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.event-static.scored{background:#fff7df;border-color:#d9b85f}.event-static.scored .time{color:#8a6212}.hidden{display:none!important}
@@ -104,14 +104,16 @@
       const plain=await crypto.subtle.decrypt({name:"AES-GCM",iv:b64ToBytes(payload.iv)},key,b64ToBytes(payload.data));
       return JSON.parse(new TextDecoder().decode(plain));
     }
-    function keyFor(no,index,name){return no+":"+index+":"+name}
+    function keyFor(no,index,label){return no+":"+index+":"+label}
     function countsFor(event){
-      const names=decrypted?.competitions?.[String(event.no)]||[];
-      const done=names.reduce((n,name,i)=>n+(checked[keyFor(event.no,i,name)]?1:0),0);
-      return{names,done};
+      const competition=decrypted?.competitions?.[String(event.no)]||{unit:"名",items:[]};
+      const items=competition.items||[];
+      const players=items.filter(item=>item.type==="player");
+      const done=players.reduce((n,item,i)=>n+(checked[keyFor(event.no,i,item.label)]?1:0),0);
+      return{competition,items,players,done};
     }
     function makeEvent(event){
-      const {names,done}=countsFor(event);
+      const {competition,items,players,done}=countsFor(event);
 
       if(event.no < 5 || event.no > 17){
         const article=document.createElement("article");
@@ -160,10 +162,10 @@
       }
 
       let attendance=null;
-      if(names.length){
+      if(players.length){
         attendance=document.createElement("span");
         attendance.className="attendance";
-        attendance.textContent=done+" / "+names.length+" 名 集合";
+        attendance.textContent=done+" / "+players.length+" "+competition.unit+" 集合";
         main.appendChild(attendance);
       }
 
@@ -175,43 +177,53 @@
       summary.append(time,main);
       details.appendChild(summary);
 
-      const players=document.createElement("div");
-      players.className="players";
+      const playerList=document.createElement("div");
+      playerList.className="players";
 
-      if(!names.length){
+      if(!items.length){
         const empty=document.createElement("div");
         empty.style.padding="10px 5px 2px";
         empty.style.color="var(--muted)";
         empty.style.fontSize=".9rem";
         empty.textContent="選手はまだ登録されていません。";
-        players.appendChild(empty);
+        playerList.appendChild(empty);
+      }else{
+        let playerIndex=0;
+        items.forEach(item=>{
+          if(item.type==="heading"){
+            const heading=document.createElement("div");
+            heading.className="player-heading";
+            heading.textContent=item.label;
+            playerList.appendChild(heading);
+            return;
+          }
+
+          const index=playerIndex++;
+          const k=keyFor(event.no,index,item.label);
+          const label=document.createElement("label");
+          label.className="player"+(checked[k]?" checked":"");
+
+          const input=document.createElement("input");
+          input.type="checkbox";
+          input.checked=!!checked[k];
+
+          const span=document.createElement("span");
+          span.textContent=item.label;
+
+          input.addEventListener("change",()=>{
+            if(input.checked)checked[k]=true;else delete checked[k];
+            saveChecks();
+            label.classList.toggle("checked",input.checked);
+            const fresh=countsFor(event);
+            if(attendance) attendance.textContent=fresh.done+" / "+fresh.players.length+" "+fresh.competition.unit+" 集合";
+          });
+
+          label.append(input,span);
+          playerList.appendChild(label);
+        });
       }
 
-      names.forEach((name,index)=>{
-        const k=keyFor(event.no,index,name);
-        const label=document.createElement("label");
-        label.className="player"+(checked[k]?" checked":"");
-
-        const input=document.createElement("input");
-        input.type="checkbox";
-        input.checked=!!checked[k];
-
-        const span=document.createElement("span");
-        span.textContent=name;
-
-        input.addEventListener("change",()=>{
-          if(input.checked)checked[k]=true;else delete checked[k];
-          saveChecks();
-          label.classList.toggle("checked",input.checked);
-          const fresh=countsFor(event);
-          if(attendance) attendance.textContent=fresh.done+" / "+fresh.names.length+" 名 集合";
-        });
-
-        label.append(input,span);
-        players.appendChild(label);
-      });
-
-      details.appendChild(players);
+      details.appendChild(playerList);
       return details;
     }
     function render(){
