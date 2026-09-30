@@ -98,6 +98,7 @@
     ];
 
     const STORAGE_KEY="tatsuishi-undokai-attendance-v1";
+    const PASSPHRASE_SESSION_KEY="tatsuishi-undokai-passphrase";
     let decrypted=null;
     let checked=loadChecks();
 
@@ -371,28 +372,45 @@
       for(const event of EVENTS)(event.part==="morning"?morning:afternoon).appendChild(makeEvent(event));
     }
 
-    document.getElementById("unlockForm").addEventListener("submit",async e=>{
-      e.preventDefault();
+    async function unlockWithPassword(password,{silent=false}={}){
       const message=document.getElementById("unlockMessage");
-      const password=document.getElementById("password").value;
-      message.className="message";
-      message.textContent="確認しています…";
+      if(!silent){
+        message.className="message";
+        message.textContent="確認しています…";
+      }
+
       try{
         const response=await fetch("./players.enc.json",{cache:"no-store"});
         if(!response.ok)throw new Error("data");
         decrypted=await decryptPayload(await response.json(),password);
         sessionPassword=password;
+        sessionStorage.setItem(PASSPHRASE_SESSION_KEY,password);
         await loadRemoteAttendance();
         document.getElementById("password").value="";
         document.getElementById("unlockPanel").classList.add("hidden");
         document.getElementById("staffApp").classList.remove("hidden");
         render();
         startAttendanceRealtime();
+        return true;
       }catch{
-        message.className="message error";
-        message.textContent="合言葉が違うか、選手データを読み込めませんでした。";
+        sessionStorage.removeItem(PASSPHRASE_SESSION_KEY);
+        if(!silent){
+          message.className="message error";
+          message.textContent="合言葉が違うか、選手データを読み込めませんでした。";
+        }
+        return false;
       }
+    }
+
+    document.getElementById("unlockForm").addEventListener("submit",async e=>{
+      e.preventDefault();
+      await unlockWithPassword(document.getElementById("password").value);
     });
+
+    const savedPassphrase=sessionStorage.getItem(PASSPHRASE_SESSION_KEY);
+    if(savedPassphrase){
+      unlockWithPassword(savedPassphrase,{silent:true});
+    }
   </script>
 </body>
 </html>
