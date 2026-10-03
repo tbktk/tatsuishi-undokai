@@ -72,9 +72,6 @@
       border-color: var(--accent);
       color: #fff;
     }
-    button.danger {
-      color: #9a2d2d;
-    }
     .note {
       margin: 0 0 14px;
       color: var(--muted);
@@ -163,21 +160,6 @@
       font-size: .78rem;
       font-weight: 600;
     }
-    input.score {
-      width: 74px;
-      padding: 8px 6px;
-      border: 1px solid #c9c6bc;
-      border-radius: 8px;
-      background: #fff;
-      color: var(--ink);
-      font: inherit;
-      font-weight: 700;
-      text-align: center;
-    }
-    input.score:focus {
-      outline: 3px solid rgba(47,107,79,.18);
-      border-color: var(--accent);
-    }
     .rank {
       font-size: 1.08rem;
     }
@@ -217,25 +199,20 @@
     <div class="toolbar">
       <button class="primary" id="sortRank" type="button">順位順に並べ替え</button>
       <button id="resetOrder" type="button">地域順に戻す</button>
-      <button id="clearScores" class="danger" type="button">得点をすべて消去</button>
     </div>
 
     <p class="note">
-      各競技の得点を入力すると、合計得点と順位が自動更新されます。入力内容はこの端末のブラウザに保存されます。
+      得点は運営側で随時更新します。必要に応じて「順位順に並べ替え」で現在順位順に表示できます。
     </p>
 
     <div class="table-shell" id="tableShell">
       <table id="scoreTable" aria-label="総社地区市民運動会 採点表"></table>
     </div>
 
-    <div class="updated" id="updated"></div>
   </div>
 
   <script>
     (() => {
-      const STORAGE_KEY = "sosha-undokai-scores-2026";
-      const ORDER_KEY = "sosha-undokai-score-order-2026";
-
       const regions = [
         "立石", "高井", "城川", "巣烏", "粟島", "山王",
         "大屋敷", "鍛冶町", "桜が丘", "新田", "植野"
@@ -254,24 +231,12 @@
         { no: 17, time: "14:30", name: "年齢別リレー（決勝）" }
       ];
 
-      const loadJson = (key, fallback) => {
-        try {
-          const raw = localStorage.getItem(key);
-          return raw ? JSON.parse(raw) : fallback;
-        } catch {
-          return fallback;
-        }
-      };
+      // 得点はここを更新して反映します。
+      // 例: 6: { "立石": 10, "高井": 8 }
+      const scores = {};
 
-      let scores = loadJson(STORAGE_KEY, {});
-      let columnOrder = loadJson(ORDER_KEY, regions);
-      if (!Array.isArray(columnOrder) || columnOrder.length !== regions.length ||
-          !regions.every(r => columnOrder.includes(r))) {
-        columnOrder = [...regions];
-      }
-
+      let columnOrder = [...regions];
       const table = document.getElementById("scoreTable");
-      const updated = document.getElementById("updated");
 
       const getScore = (eventNo, region) => {
         const value = scores?.[eventNo]?.[region];
@@ -279,19 +244,24 @@
       };
 
       const totals = () => Object.fromEntries(regions.map(region => {
-        const total = events.reduce((sum, event) => sum + (getScore(event.no, region) ?? 0), 0);
-        return [region, total];
+        const entered = events
+          .map(event => getScore(event.no, region))
+          .filter(value => value !== null);
+        if (entered.length === 0) return [region, null];
+        return [region, entered.reduce((sum, value) => sum + value, 0)];
       }));
 
       const ranks = (totalMap) => {
-        const sorted = regions
+        const ranked = regions
+          .filter(region => totalMap[region] !== null)
           .map(region => ({ region, total: totalMap[region] }))
           .sort((a, b) => b.total - a.total || regions.indexOf(a.region) - regions.indexOf(b.region));
 
-        const result = {};
+        const result = Object.fromEntries(regions.map(region => [region, null]));
         let lastTotal = null;
         let lastRank = 0;
-        sorted.forEach((item, i) => {
+
+        ranked.forEach((item, i) => {
           if (lastTotal === null || item.total !== lastTotal) {
             lastRank = i + 1;
             lastTotal = item.total;
@@ -301,15 +271,8 @@
         return result;
       };
 
-      const rankClass = rank => rank === 1 ? "first" : rank === 2 ? "second" : rank === 3 ? "third" : "";
-
-      function save() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(scores));
-        localStorage.setItem(ORDER_KEY, JSON.stringify(columnOrder));
-        updated.textContent = "この端末に保存しました：" + new Date().toLocaleTimeString("ja-JP", {
-          hour: "2-digit", minute: "2-digit"
-        });
-      }
+      const rankClass = rank =>
+        rank === 1 ? "first" : rank === 2 ? "second" : rank === 3 ? "third" : "";
 
       function render() {
         const totalMap = totals();
@@ -327,16 +290,20 @@
         const rankRow = `
           <tr class="rank-row">
             <th scope="row">順位</th>
-            ${columnOrder.map(region => `
-              <td><span class="rank ${rankClass(rankMap[region])}">${rankMap[region]}位</span></td>
-            `).join("")}
+            ${columnOrder.map(region => {
+              const rank = rankMap[region];
+              return `<td><span class="rank ${rankClass(rank)}">${rank ? rank + "位" : "—"}</span></td>`;
+            }).join("")}
           </tr>
         `;
 
         const totalRow = `
           <tr class="total-row">
             <th scope="row">合計得点</th>
-            ${columnOrder.map(region => `<td><span class="total">${totalMap[region]}</span></td>`).join("")}
+            ${columnOrder.map(region => {
+              const total = totalMap[region];
+              return `<td><span class="total">${total === null ? "—" : total}</span></td>`;
+            }).join("")}
           </tr>
         `;
 
@@ -348,72 +315,29 @@
             </th>
             ${columnOrder.map(region => {
               const value = getScore(event.no, region);
-              return `
-                <td>
-                  <input
-                    class="score"
-                    type="number"
-                    min="0"
-                    step="1"
-                    inputmode="numeric"
-                    aria-label="${event.name} ${region}の得点"
-                    data-event="${event.no}"
-                    data-region="${region}"
-                    value="${value ?? ""}"
-                    placeholder="—"
-                  />
-                </td>
-              `;
+              return `<td>${value === null ? '<span class="empty-note">—</span>' : value}</td>`;
             }).join("")}
           </tr>
         `).join("");
 
         table.innerHTML = thead + `<tbody>${rankRow}${totalRow}${eventRows}</tbody>`;
-
-        table.querySelectorAll("input.score").forEach(input => {
-          input.addEventListener("change", e => {
-            const eventNo = e.target.dataset.event;
-            const region = e.target.dataset.region;
-            const raw = e.target.value.trim();
-
-            if (!scores[eventNo]) scores[eventNo] = {};
-            if (raw === "") {
-              delete scores[eventNo][region];
-            } else {
-              const value = Number(raw);
-              if (!Number.isFinite(value) || value < 0) {
-                e.target.value = "";
-                delete scores[eventNo][region];
-              } else {
-                scores[eventNo][region] = value;
-              }
-            }
-            save();
-            render();
-          });
-        });
       }
 
       document.getElementById("sortRank").addEventListener("click", () => {
         const totalMap = totals();
-        columnOrder = [...regions].sort((a, b) =>
-          totalMap[b] - totalMap[a] || regions.indexOf(a) - regions.indexOf(b)
-        );
-        save();
+        columnOrder = [...regions].sort((a, b) => {
+          const aTotal = totalMap[a];
+          const bTotal = totalMap[b];
+          if (aTotal === null && bTotal === null) return regions.indexOf(a) - regions.indexOf(b);
+          if (aTotal === null) return 1;
+          if (bTotal === null) return -1;
+          return bTotal - aTotal || regions.indexOf(a) - regions.indexOf(b);
+        });
         render();
       });
 
       document.getElementById("resetOrder").addEventListener("click", () => {
         columnOrder = [...regions];
-        save();
-        render();
-      });
-
-      document.getElementById("clearScores").addEventListener("click", () => {
-        if (!confirm("入力した得点をすべて消去します。よろしいですか？")) return;
-        scores = {};
-        columnOrder = [...regions];
-        save();
         render();
       });
 
