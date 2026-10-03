@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f7f5ef" />
+  <title>令和8年度 総社地区市民運動会 採点表</title>
+  <meta name="description" content="令和8年度 総社地区市民運動会の採点表です。" />
+  <style>
+    :root {
+      --bg: #f7f5ef;
+      --surface: #fff;
+      --ink: #1f2933;
+      --muted: #69757f;
+      --line: #d9d6cc;
+      --accent: #2f6b4f;
+      --accent-soft: #eaf3ee;
+      --score: #fff7df;
+      --score-line: #d9b85f;
+      --rank: #eef4ff;
+      --total: #edf7f1;
+      --shadow: 0 10px 30px rgba(31, 41, 51, .06);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN",
+        "Hiragino Sans", "Yu Gothic", "YuGothic", Meiryo, sans-serif;
+      line-height: 1.55;
+    }
+    .wrap {
+      width: min(1500px, calc(100% - 24px));
+      margin: 0 auto;
+      padding: 28px 0 40px;
+    }
+    header {
+      margin-bottom: 18px;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(1.55rem, 4vw, 2.3rem);
+      line-height: 1.25;
+    }
+    .meta {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 16px 0;
+    }
+    button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--ink);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+    }
+    button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    button.danger {
+      color: #9a2d2d;
+    }
+    .note {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: .88rem;
+    }
+    .table-shell {
+      overflow: auto;
+      max-height: calc(100vh - 230px);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    table {
+      width: max-content;
+      min-width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-variant-numeric: tabular-nums;
+    }
+    th, td {
+      min-width: 112px;
+      height: 58px;
+      padding: 8px 10px;
+      text-align: center;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: var(--surface);
+      white-space: nowrap;
+    }
+    th:first-child,
+    td:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 4;
+      min-width: 190px;
+      width: 190px;
+      text-align: left;
+      font-weight: 700;
+      box-shadow: 2px 0 0 rgba(0,0,0,.04);
+    }
+    thead th {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: #f2f0ea;
+      font-weight: 800;
+    }
+    thead th:first-child {
+      z-index: 7;
+      background: #ebe8df;
+    }
+    tbody tr.rank-row th,
+    tbody tr.rank-row td {
+      position: sticky;
+      top: 58px;
+      z-index: 3;
+      background: var(--rank);
+      font-weight: 800;
+    }
+    tbody tr.total-row th,
+    tbody tr.total-row td {
+      position: sticky;
+      top: 116px;
+      z-index: 3;
+      background: var(--total);
+      font-weight: 800;
+    }
+    tbody tr.rank-row th:first-child,
+    tbody tr.total-row th:first-child {
+      z-index: 6;
+    }
+    tbody tr.event-row th {
+      background: var(--score);
+      border-left: 4px solid var(--score-line);
+    }
+    .event-name {
+      display: block;
+      white-space: normal;
+      line-height: 1.25;
+    }
+    .event-meta {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 600;
+    }
+    input.score {
+      width: 74px;
+      padding: 8px 6px;
+      border: 1px solid #c9c6bc;
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+      font-weight: 700;
+      text-align: center;
+    }
+    input.score:focus {
+      outline: 3px solid rgba(47,107,79,.18);
+      border-color: var(--accent);
+    }
+    .rank {
+      font-size: 1.08rem;
+    }
+    .rank.first { color: #9a6b00; }
+    .rank.second { color: #59636d; }
+    .rank.third { color: #8a4f2b; }
+    .total {
+      color: var(--accent);
+      font-size: 1.06rem;
+    }
+    .updated {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+    .empty-note {
+      color: var(--muted);
+      font-size: .8rem;
+    }
+    @media (max-width: 640px) {
+      .wrap { width: min(100% - 12px, 1500px); padding-top: 18px; }
+      .table-shell { max-height: calc(100vh - 200px); border-radius: 10px; }
+      th, td { min-width: 96px; padding: 7px 6px; }
+      th:first-child, td:first-child { min-width: 155px; width: 155px; }
+      input.score { width: 66px; }
+      .toolbar button { flex: 1 1 calc(50% - 4px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>令和8年度 総社地区市民運動会 採点表</h1>
+      <div class="meta">2026年10月4日（日）・総社小学校</div>
+    </header>
+
+    <div class="toolbar">
+      <button class="primary" id="sortRank" type="button">順位順に並べ替え</button>
+      <button id="resetOrder" type="button">地域順に戻す</button>
+      <button id="clearScores" class="danger" type="button">得点をすべて消去</button>
+    </div>
+
+    <p class="note">
+      各競技の得点を入力すると、合計得点と順位が自動更新されます。入力内容はこの端末のブラウザに保存されます。
+    </p>
+
+    <div class="table-shell" id="tableShell">
+      <table id="scoreTable" aria-label="総社地区市民運動会 採点表"></table>
+    </div>
+
+    <div class="updated" id="updated"></div>
+  </div>
+
+  <script>
+    (() => {
+      const STORAGE_KEY = "sosha-undokai-scores-2026";
+      const ORDER_KEY = "sosha-undokai-score-order-2026";
+
+      const regions = [
+        "立石", "高井", "城川", "巣烏", "粟島", "山王",
+        "大屋敷", "鍛冶町", "桜が丘", "新田", "植野"
+      ];
+
+      const events = [
+        { no: 6, time: "9:50", name: "ソフトバレー送りリレー" },
+        { no: 8, time: "10:40", name: "インディアカ入りリレー" },
+        { no: 9, time: "11:05", name: "シルバー玉入れ競争" },
+        { no: 10, time: "11:30", name: "年齢別リレー（予選）" },
+        { no: 12, time: "12:30", name: "助っ人綱引き" },
+        { no: 13, time: "12:55", name: "ボール蹴りリレー" },
+        { no: 14, time: "13:20", name: "子供長縄跳び競争" },
+        { no: 15, time: "13:45", name: "ソフトボールリレー" },
+        { no: 16, time: "14:05", name: "紅白玉入れ" },
+        { no: 17, time: "14:30", name: "年齢別リレー（決勝）" }
+      ];
+
+      const loadJson = (key, fallback) => {
+        try {
+          const raw = localStorage.getItem(key);
+          return raw ? JSON.parse(raw) : fallback;
+        } catch {
+          return fallback;
+        }
+      };
+
+      let scores = loadJson(STORAGE_KEY, {});
+      let columnOrder = loadJson(ORDER_KEY, regions);
+      if (!Array.isArray(columnOrder) || columnOrder.length !== regions.length ||
+          !regions.every(r => columnOrder.includes(r))) {
+        columnOrder = [...regions];
+      }
+
+      const table = document.getElementById("scoreTable");
+      const updated = document.getElementById("updated");
+
+      const getScore = (eventNo, region) => {
+        const value = scores?.[eventNo]?.[region];
+        return typeof value === "number" && Number.isFinite(value) ? value : null;
+      };
+
+      const totals = () => Object.fromEntries(regions.map(region => {
+        const total = events.reduce((sum, event) => sum + (getScore(event.no, region) ?? 0), 0);
+        return [region, total];
+      }));
+
+      const ranks = (totalMap) => {
+        const sorted = regions
+          .map(region => ({ region, total: totalMap[region] }))
+          .sort((a, b) => b.total - a.total || regions.indexOf(a.region) - regions.indexOf(b.region));
+
+        const result = {};
+        let lastTotal = null;
+        let lastRank = 0;
+        sorted.forEach((item, i) => {
+          if (lastTotal === null || item.total !== lastTotal) {
+            lastRank = i + 1;
+            lastTotal = item.total;
+          }
+          result[item.region] = lastRank;
+        });
+        return result;
+      };
+
+      const rankClass = rank => rank === 1 ? "first" : rank === 2 ? "second" : rank === 3 ? "third" : "";
+
+      function save() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(scores));
+        localStorage.setItem(ORDER_KEY, JSON.stringify(columnOrder));
+        updated.textContent = "この端末に保存しました：" + new Date().toLocaleTimeString("ja-JP", {
+          hour: "2-digit", minute: "2-digit"
+        });
+      }
+
+      function render() {
+        const totalMap = totals();
+        const rankMap = ranks(totalMap);
+
+        const thead = `
+          <thead>
+            <tr>
+              <th scope="col">競技</th>
+              ${columnOrder.map(region => `<th scope="col">${region}</th>`).join("")}
+            </tr>
+          </thead>
+        `;
+
+        const rankRow = `
+          <tr class="rank-row">
+            <th scope="row">順位</th>
+            ${columnOrder.map(region => `
+              <td><span class="rank ${rankClass(rankMap[region])}">${rankMap[region]}位</span></td>
+            `).join("")}
+          </tr>
+        `;
+
+        const totalRow = `
+          <tr class="total-row">
+            <th scope="row">合計得点</th>
+            ${columnOrder.map(region => `<td><span class="total">${totalMap[region]}</span></td>`).join("")}
+          </tr>
+        `;
+
+        const eventRows = events.map(event => `
+          <tr class="event-row">
+            <th scope="row">
+              <span class="event-name">No.${event.no} ${event.name}</span>
+              <span class="event-meta">${event.time}</span>
+            </th>
+            ${columnOrder.map(region => {
+              const value = getScore(event.no, region);
+              return `
+                <td>
+                  <input
+                    class="score"
+                    type="number"
+                    min="0"
+                    step="1"
+                    inputmode="numeric"
+                    aria-label="${event.name} ${region}の得点"
+                    data-event="${event.no}"
+                    data-region="${region}"
+                    value="${value ?? ""}"
+                    placeholder="—"
+                  />
+                </td>
+              `;
+            }).join("")}
+          </tr>
+        `).join("");
+
+        table.innerHTML = thead + `<tbody>${rankRow}${totalRow}${eventRows}</tbody>`;
+
+        table.querySelectorAll("input.score").forEach(input => {
+          input.addEventListener("change", e => {
+            const eventNo = e.target.dataset.event;
+            const region = e.target.dataset.region;
+            const raw = e.target.value.trim();
+
+            if (!scores[eventNo]) scores[eventNo] = {};
+            if (raw === "") {
+              delete scores[eventNo][region];
+            } else {
+              const value = Number(raw);
+              if (!Number.isFinite(value) || value < 0) {
+                e.target.value = "";
+                delete scores[eventNo][region];
+              } else {
+                scores[eventNo][region] = value;
+              }
+            }
+            save();
+            render();
+          });
+        });
+      }
+
+      document.getElementById("sortRank").addEventListener("click", () => {
+        const totalMap = totals();
+        columnOrder = [...regions].sort((a, b) =>
+          totalMap[b] - totalMap[a] || regions.indexOf(a) - regions.indexOf(b)
+        );
+        save();
+        render();
+      });
+
+      document.getElementById("resetOrder").addEventListener("click", () => {
+        columnOrder = [...regions];
+        save();
+        render();
+      });
+
+      document.getElementById("clearScores").addEventListener("click", () => {
+        if (!confirm("入力した得点をすべて消去します。よろしいですか？")) return;
+        scores = {};
+        columnOrder = [...regions];
+        save();
+        render();
+      });
+
+      render();
+    })();
+  </script>
+</body>
+</html>
