@@ -251,7 +251,6 @@
         }
       };
 
-      const columnOrder = [...regions];
       const table = document.getElementById("scoreTable");
 
       const getScore = (eventNo, region) => {
@@ -293,6 +292,18 @@
       function render() {
         const totalMap = totals();
         const rankMap = ranks(totalMap);
+        const columnOrder = [...regions].sort((a, b) => {
+          const aTotal = totalMap[a];
+          const bTotal = totalMap[b];
+
+          if (aTotal === null && bTotal === null) {
+            return regions.indexOf(a) - regions.indexOf(b);
+          }
+          if (aTotal === null) return 1;
+          if (bTotal === null) return -1;
+          if (bTotal !== aTotal) return bTotal - aTotal;
+          return regions.indexOf(a) - regions.indexOf(b);
+        });
 
         const thead = `
           <thead>
