@@ -206,7 +206,9 @@
       ];
 
       const events = [
+        { no: 4, time: "9:00", name: "スピード玉入れ（※）" },
         { no: 6, time: "9:50", name: "ソフトバレー送りリレー" },
+        { no: 7, time: "10:15", name: "台風の目（※）" },
         { no: 8, time: "10:40", name: "インディアカ入りリレー" },
         { no: 9, time: "11:05", name: "シルバー玉入れ競争" },
         { no: 10, time: "11:30", name: "年齢別リレー（予選）" },
@@ -220,21 +222,20 @@
 
       // 得点はここを更新して反映します。
       // 例: 6: { "立石": 10, "高井": 8 }
-      const scores = {};
-
-      // 競技別得点とは別に、合計得点へ直接加算する点数。
-      const additionalTotals = {
-        "巣烏": 1,
-        "鍛冶町": 1,
-        "粟島": 1,
-        "大屋敷": 1,
-        "山王": 1,
-        "新田": 2,
-        "立石": 2,
-        "桜が丘": 2,
-        "植野": 2,
-        "高井": 2,
-        "城川": 2
+      const scores = {
+        4: {
+          "巣烏": 1,
+          "鍛冶町": 1,
+          "粟島": 1,
+          "大屋敷": 1,
+          "山王": 1,
+          "新田": 2,
+          "立石": 2,
+          "桜が丘": 2,
+          "植野": 2,
+          "高井": 2,
+          "城川": 2
+        }
       };
 
       const columnOrder = [...regions];
@@ -249,9 +250,8 @@
         const entered = events
           .map(event => getScore(event.no, region))
           .filter(value => value !== null);
-        const additional = additionalTotals[region] ?? 0;
-        if (entered.length === 0 && additional === 0) return [region, null];
-        return [region, entered.reduce((sum, value) => sum + value, 0) + additional];
+        if (entered.length === 0) return [region, null];
+        return [region, entered.reduce((sum, value) => sum + value, 0)];
       }));
 
       const ranks = (totalMap) => {
