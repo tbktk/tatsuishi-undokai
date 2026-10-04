@@ -289,16 +289,10 @@
           "城川": 1
         },
         10: {
-          "巣烏": 2,
-          "鍛冶町": 2,
           "粟島": 1,
-          "大屋敷": 2,
-          "山王": 2,
           "新田": 1,
           "立石": 1,
-          "桜が丘": 2,
           "植野": 1,
-          "高井": 2,
           "城川": 1
         },
         12: {
@@ -365,6 +359,14 @@
           "植野": 3,
           "高井": 1,
           "城川": 2
+        },
+        17: {
+          "巣烏": 4,
+          "鍛冶町": 3,
+          "大屋敷": 7,
+          "山王": 2,
+          "桜が丘": 5,
+          "高井": 6
         }
       };
 
@@ -459,8 +461,7 @@
             </th>
             ${columnOrder.map(region => {
               const value = getScore(event.no, region);
-              const displayValue = event.no === 10 && value === 2 ? "（2）" : value;
-              return `<td>${value === null ? '<span class="empty-note">—</span>' : displayValue}</td>`;
+              return `<td>${value === null ? '<span class="empty-note">—</span>' : value}</td>`;
             }).join("")}
           </tr>
         `).join("");
